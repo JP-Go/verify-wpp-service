@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1720812280507,
+      "tag": "20240712192440_create_entities_tables",
+      "breakpoints": true
+    }
+  ]
+}
