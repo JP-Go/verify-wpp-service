@@ -1,5 +1,3 @@
-import { whatsapps } from '@/infra/database/schema/whatsapps';
-
 type WhatsAppProps = {
   number: string;
   name: string;
@@ -11,7 +9,7 @@ type WhatsAppProps = {
 
 export class WhatsApp {
   constructor(
-    private props: WhatsAppProps,
+    private props: Partial<WhatsAppProps>,
     private _id: number | null = null,
   ) {}
 
@@ -35,15 +33,6 @@ export class WhatsApp {
   }
   get updatedAt() {
     return this.props.updatedAt;
-  }
-
-  static fromModel(whatsAppModel: typeof whatsapps.$inferSelect) {
-    return new WhatsApp(
-      {
-        ...whatsAppModel,
-      },
-      whatsAppModel.id,
-    );
   }
 
   toHTTP() {

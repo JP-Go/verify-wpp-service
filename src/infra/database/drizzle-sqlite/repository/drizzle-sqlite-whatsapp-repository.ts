@@ -3,12 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { WhatsApp } from '@/domain/entities/whatsapp';
 import { WhatsAppRepository } from '@/domain/repositories/whatsapp-repository';
-import * as schema from '@/infra/database/schema';
+import * as schema from '../schema';
+import { DrizzleSQLiteWhatsappMapper } from '../mappers/whatsapp-mapper';
 
 @Injectable()
 export class DrizzleSQLiteWhatsAppRepository implements WhatsAppRepository {
   constructor(
     @Inject('DB_DEV') private database: BetterSQLite3Database<typeof schema>,
+    private drizzleSQLiteWhatsappMapper: DrizzleSQLiteWhatsappMapper,
   ) {}
   async findByNumber(number: string) {
     const existing = await this.database.query.whatsapps.findFirst({
@@ -17,7 +19,7 @@ export class DrizzleSQLiteWhatsAppRepository implements WhatsAppRepository {
     if (existing === undefined) {
       return undefined;
     }
-    return WhatsApp.fromModel(existing);
+    return this.drizzleSQLiteWhatsappMapper.toDomain(existing);
   }
   async save(whatsapp: WhatsApp) {
     const saved = this.database
@@ -30,6 +32,6 @@ export class DrizzleSQLiteWhatsAppRepository implements WhatsAppRepository {
       .returning()
       .get();
 
-    return WhatsApp.fromModel(saved);
+    return this.drizzleSQLiteWhatsappMapper.toDomain(saved);
   }
 }

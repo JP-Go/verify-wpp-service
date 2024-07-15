@@ -25,6 +25,9 @@ export const verifiedContacts = sqliteTable('verified_contacts', {
 export const verifiedContactsRelations = relations(
   verifiedContacts,
   ({ one }) => ({
-    requestId: one(verificationRequests),
+    requestId: one(verificationRequests, {
+      fields: [verifiedContacts.requestId],
+      references: [verificationRequests.id],
+    }),
   }),
 );

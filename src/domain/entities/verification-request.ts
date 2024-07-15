@@ -1,11 +1,11 @@
-import { verificationRequests } from '@/infra/database/schema/verification-request';
 import { VerifiedContact } from './verified-contact';
+import { WhatsApp } from './whatsapp';
 
 type VerificationRequestProps = {
   requestKind: 'SINGLE' | 'LOT';
   requestIdentity: string;
   requestedBy: number;
-  whatsappUsed: number;
+  whatsappUsed: WhatsApp;
   createdAt: Date;
   updatedAt: Date;
   verifiedContacts: VerifiedContact[];
@@ -42,16 +42,17 @@ export class VerificationRequest {
     return this.props.verifiedContacts;
   }
 
-  static fromModel(
-    verificationRequestModel: typeof verificationRequests.$inferSelect,
-  ) {
-    return new VerificationRequest(
-      {
-        ...verificationRequestModel,
-        requestKind: verificationRequestModel.requestKind as 'SINGLE' | 'LOT',
-        verifiedContacts: [],
-      },
-      verificationRequestModel.id,
-    );
+  toHTTP() {
+    return {
+      id: this.id,
+      requestKind: this.requestKind,
+      requestIdentity: this.requestIdentity,
+      requestedBy: this.requestedBy,
+      whatsappUsed: this.whatsappUsed.toHTTP(),
+      requestedAt: this.createdAt,
+      verifiedContacts: this.verifiedContacts.map((contact) =>
+        contact.toHTTP(),
+      ),
+    };
   }
 }

@@ -1,4 +1,3 @@
-import { verifiedContacts } from '@/infra/database/schema/verified-contacts';
 type VerifiedContactProps = {
   number: string;
   requestId: number;
@@ -12,7 +11,7 @@ type VerifiedContactProps = {
 export class VerifiedContact {
   constructor(
     private props: VerifiedContactProps,
-    private _id: number | null,
+    private _id: number | null = null,
   ) {}
 
   get id() {
@@ -40,12 +39,20 @@ export class VerifiedContact {
     return this.props.updatedAt;
   }
 
-  static fromModel(verifiedContactModel: typeof verifiedContacts.$inferSelect) {
-    return new VerifiedContact(
-      {
-        ...verifiedContactModel,
-      },
-      verifiedContactModel.id,
-    );
+  setOnWhatsApp(onWhatsApp: boolean) {
+    this.props.verifiedAt = new Date();
+    this.props.updatedAt = new Date();
+    this.props.onWhatsApp = onWhatsApp;
+  }
+
+  toHTTP() {
+    return {
+      id: this.id,
+      number: this.number,
+      requestId: this.requestId,
+      name: this.name,
+      onWhatsApp: this.onWhatsApp,
+      verifiedAt: this.verifiedAt,
+    };
   }
 }
