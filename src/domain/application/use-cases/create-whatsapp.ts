@@ -3,10 +3,14 @@ import { WhatsAppInUseException } from '@/domain/exception/whatsapp-in-use-excep
 import { WhatsApp } from '@/domain/entities/whatsapp';
 import { CreateWhatsAppDTO } from '@/infra/http/dtos/create-whatsapp.dto';
 import { WhatsAppRepository } from '@/domain/repositories/whatsapp-repository';
+import { WhatsAppVerificationService } from '@/domain/services/WhatsAppVerificationService';
 
 @Injectable()
 export class CreateWhatsAppUseCase {
-  constructor(private whatsappRepository: WhatsAppRepository) {}
+  constructor(
+    private readonly whatsappRepository: WhatsAppRepository,
+    private readonly verificationService: WhatsAppVerificationService,
+  ) {}
 
   async execute(createWhatsAppDTO: CreateWhatsAppDTO) {
     const existingWhatsApp = await this.whatsappRepository.findByNumber(
@@ -16,7 +20,8 @@ export class CreateWhatsAppUseCase {
       throw new WhatsAppInUseException();
     }
 
-    const whatsapp = this.whatsappRepository.save(
+    await this.verificationService.createChannel(createWhatsAppDTO.number);
+    const whatsapp = await this.whatsappRepository.save(
       new WhatsApp({
         number: createWhatsAppDTO.number,
         name: createWhatsAppDTO.name,
