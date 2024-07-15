@@ -30,13 +30,12 @@ export class VerificationRequestController {
   async verifyWhatsapp(
     @Body() verificationRequest: { number: string; sessionId: string },
   ) {
-    const valid = await this.verifyNumberUseCase.execute(
-      verificationRequest.number,
-      verificationRequest.sessionId,
-    );
     return {
       number: verificationRequest.number,
-      valid,
+      valid: await this.verifyNumberUseCase.execute(
+        verificationRequest.number,
+        verificationRequest.sessionId,
+      ),
     };
   }
 }
