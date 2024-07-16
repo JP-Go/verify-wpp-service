@@ -1,7 +1,7 @@
 import { WhatsApp } from '@/domain/entities/whatsapp';
-import { whatsapps } from '../schema';
+import { whatsapps } from '../schema/sqlite';
 
-export class DrizzleSQLiteWhatsappMapper {
+export class DrizzleWhatsappMapper {
   toDomain(whatsappModel: typeof whatsapps.$inferSelect | null) {
     return whatsappModel === null
       ? null

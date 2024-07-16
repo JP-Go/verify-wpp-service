@@ -3,16 +3,16 @@ import {
   verificationRequests,
   verifiedContacts as verifiedContactsModel,
   whatsapps,
-} from '../schema';
+} from '../schema/sqlite';
 import { VerificationRequest } from '@/domain/entities/verification-request';
-import { DrizzleSQLiteVerifiedContactsMapper } from './verified-contacts-mapper';
-import { DrizzleSQLiteWhatsappMapper } from './whatsapp-mapper';
+import { DrizzleVerifiedContactsMapper } from './verified-contacts-mapper';
+import { DrizzleWhatsappMapper } from './whatsapp-mapper';
 
 @Injectable()
-export class DrizzleSQLiteVerificationRequestMapper {
+export class DrizzleVerificationRequestMapper {
   constructor(
-    private verifiedContactsMapper: DrizzleSQLiteVerifiedContactsMapper,
-    private whatsappMapper: DrizzleSQLiteWhatsappMapper,
+    private verifiedContactsMapper: DrizzleVerifiedContactsMapper,
+    private whatsappMapper: DrizzleWhatsappMapper,
   ) {}
   toDomain(
     verificationRequestModel: typeof verificationRequests.$inferSelect,

@@ -2,16 +2,16 @@ import { VerificationRequest } from '@/domain/entities/verification-request';
 import { VerificationRequestRepository } from '@/domain/repositories/verification-request-repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import * as schema from '../schema';
-import { DrizzleSQLiteVerificationRequestMapper } from '../mappers/verification-request-mapper';
+import * as schema from '../schema/sqlite';
+import { DrizzleVerificationRequestMapper } from '../mappers/verification-request-mapper';
 
 @Injectable()
-export class DrizzleSQLiteVerificationRequestRepository
+export class DrizzleVerificationRequestRepository
   implements VerificationRequestRepository
 {
   constructor(
     @Inject('DB_DEV') private database: BetterSQLite3Database<typeof schema>,
-    private drizzleSQLiteVerificationRequestMapper: DrizzleSQLiteVerificationRequestMapper,
+    private drizzleSQLiteVerificationRequestMapper: DrizzleVerificationRequestMapper,
   ) {}
 
   async save(verificationRequest: VerificationRequest) {

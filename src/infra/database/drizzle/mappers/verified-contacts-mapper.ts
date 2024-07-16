@@ -1,7 +1,7 @@
 import { VerifiedContact } from '@/domain/entities/verified-contact';
-import { verifiedContacts } from '../schema';
+import { verifiedContacts } from '../schema/sqlite';
 
-export class DrizzleSQLiteVerifiedContactsMapper {
+export class DrizzleVerifiedContactsMapper {
   toDomain(verifiedContactModel: typeof verifiedContacts.$inferSelect | null) {
     return verifiedContactModel === null
       ? null
