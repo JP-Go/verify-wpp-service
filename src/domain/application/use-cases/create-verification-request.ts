@@ -42,7 +42,7 @@ export class CreateVerificationRequestUseCase {
     request = await this.verificationRequestRepository.save(request);
 
     if (kind.toUpperCase() === 'SINGLE') {
-      request.verifiedContacts.push(
+      request.addContact(
         new VerifiedContact({
           name: '',
           requestId: request.id,

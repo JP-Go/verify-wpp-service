@@ -42,6 +42,10 @@ export class VerificationRequest {
     return this.props.verifiedContacts;
   }
 
+  addContact(verifiedContact: VerifiedContact) {
+    this.props.verifiedContacts.push(verifiedContact);
+  }
+
   toHTTP() {
     return {
       id: this.id,

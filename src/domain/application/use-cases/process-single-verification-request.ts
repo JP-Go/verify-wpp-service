@@ -1,4 +1,5 @@
 import { VerificationRequest } from '@/domain/entities/verification-request';
+import { VerifiedContactsRepository } from '@/domain/repositories/verified-contacts';
 import { WhatsAppVerificationService } from '@/domain/services/WhatsAppVerificationService';
 import { Injectable } from '@nestjs/common';
 
@@ -8,14 +9,19 @@ import { Injectable } from '@nestjs/common';
  */
 @Injectable()
 export class ProcessSingleVerificationRequestUseCase {
-  constructor(private verificationService: WhatsAppVerificationService) {}
+  constructor(
+    //TODO: attach verification service
+    private verificationService: WhatsAppVerificationService,
+    private verifiedContactsRepository: VerifiedContactsRepository,
+  ) {}
 
   async execute(verificationRequest: VerificationRequest) {
     const [contact] = verificationRequest.verifiedContacts;
-    const contactExists = await this.verificationService.verifyNumber(
-      contact.number,
-      verificationRequest.whatsappUsed.number,
-    );
-    contact.setOnWhatsApp(contactExists);
+    // const contactExists = await this.verificationService.verifyNumber(
+    //   contact.number,
+    //   verificationRequest.whatsappUsed.number,
+    // );
+    contact.setOnWhatsApp(true);
+    this.verifiedContactsRepository.save(contact);
   }
 }

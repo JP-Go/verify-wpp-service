@@ -20,7 +20,7 @@ export class CreateWhatsAppUseCase {
       throw new WhatsAppInUseException();
     }
 
-    await this.verificationService.createConnection(createWhatsAppDTO.number);
+    // await this.verificationService.createConnection(createWhatsAppDTO.number);
     const whatsapp = await this.whatsappRepository.save(
       new WhatsApp({
         number: createWhatsAppDTO.number,
