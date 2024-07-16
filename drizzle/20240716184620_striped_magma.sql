@@ -12,7 +12,7 @@ CREATE TABLE `verified_contacts` (
 	`request_id` integer NOT NULL,
 	`number` text NOT NULL,
 	`name` text,
-	`on_whatsapp` integer DEFAULT 0,
+	`on_whatsapp` integer DEFAULT false NOT NULL,
 	`verified_at` integer,
 	`created_at` integer DEFAULT (CURRENT_TIMESTAMP),
 	`updated_at` integer DEFAULT (CURRENT_TIMESTAMP),
@@ -22,7 +22,7 @@ CREATE TABLE `verified_contacts` (
 CREATE TABLE `verification_requests` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`request_kind` text NOT NULL,
-	`request_identity` text,
+	`request_identity` text NOT NULL,
 	`requested_by` integer NOT NULL,
 	`whatsapp_used` integer NOT NULL,
 	`created_at` integer DEFAULT (CURRENT_TIMESTAMP),

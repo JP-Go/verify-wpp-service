@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "caa2bf38-0146-423d-9d72-17ec2ee125ab",
+  "id": "4a12faca-3cb3-4935-88bd-0c18e8259aef",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -92,9 +92,9 @@
           "name": "on_whatsapp",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
-          "default": 0
+          "default": false
         },
         "verified_at": {
           "name": "verified_at",
@@ -160,7 +160,7 @@
           "name": "request_identity",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "requested_by": {
