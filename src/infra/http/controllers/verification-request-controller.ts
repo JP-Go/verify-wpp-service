@@ -16,14 +16,21 @@ export class VerificationRequestController {
   async createVerificationRequest(
     @Body() createVerificationRequestDTO: CreateVerificationRequestDTO,
   ) {
-    return this.createVerificationRequestUseCase.execute(
+    const request = await this.createVerificationRequestUseCase.execute(
       createVerificationRequestDTO,
     );
+    return {
+      requestId: request.id,
+    };
   }
 
   @Get('/:id')
   async getVerificationRequest(@Param('id') id: number) {
-    return (await this.findVerificationRequestUseCase.execute(id)).toHTTP();
+    const verificationRequest =
+      await this.findVerificationRequestUseCase.execute(id);
+    return {
+      request: verificationRequest.toHTTP(),
+    };
   }
 
   @Post('/test')
