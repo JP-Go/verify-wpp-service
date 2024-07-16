@@ -27,9 +27,9 @@ export class BaileysWhatsappVerificationService
       throw new InternalServerErrorException('Session not found');
     }
     const [result] = await socket.onWhatsApp(number);
-    return result.exists;
+    return Boolean(result.exists);
   }
-  async createChannel(sessionId: string, retries = 0) {
+  async createConnection(sessionId: string, retries = 0) {
     if (retries > 3) {
       throw new Error('Could not connect to whatsapp');
     }
@@ -54,7 +54,7 @@ export class BaileysWhatsappVerificationService
         );
         // reconnect if not logged out
         if (shouldReconnect) {
-          this.createChannel(sessionId, retries + 1);
+          this.createConnection(sessionId, retries + 1);
         }
       } else if (connection === 'open') {
         console.log('opened connection');
