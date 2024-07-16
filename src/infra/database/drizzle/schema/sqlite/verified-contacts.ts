@@ -12,14 +12,20 @@ export const verifiedContacts = sqliteTable('verified_contacts', {
     .notNull(),
   number: text('number').notNull(),
   name: text('name'),
-  onWhatsApp: integer('on_whatsapp').default(0).$type<boolean>(),
-  verifiedAt: integer('verified_at').$type<Date>(),
-  createdAt: integer('created_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
-  updatedAt: integer('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
+  onWhatsApp: integer('on_whatsapp', {
+    mode: 'boolean',
+  })
+    .notNull()
+    .default(false),
+  verifiedAt: integer('verified_at', {
+    mode: 'timestamp',
+  }),
+  createdAt: integer('created_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: integer('updated_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const verifiedContactsRelations = relations(

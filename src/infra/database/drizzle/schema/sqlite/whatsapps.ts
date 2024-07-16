@@ -7,10 +7,10 @@ export const whatsapps = sqliteTable('whatsapps', {
   number: text('number').notNull(),
   status: text('status').notNull(),
   qrcode: text('qrcode'),
-  createdAt: integer('created_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
-  updatedAt: integer('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
+  createdAt: integer('created_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: integer('updated_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
 });

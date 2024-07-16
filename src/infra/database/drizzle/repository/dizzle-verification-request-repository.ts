@@ -18,6 +18,7 @@ export class DrizzleVerificationRequestRepository
     const request = this.database
       .insert(schema.verificationRequests)
       .values({
+        requestIdentity: verificationRequest.requestIdentity,
         whatsappUsed: verificationRequest.whatsappUsed.id,
         requestedBy: verificationRequest.requestedBy,
         requestKind: verificationRequest.requestKind,

@@ -7,12 +7,12 @@ export const users = sqliteTable('users', {
   username: text('username').notNull(),
   hashedPassword: text('hashed_password').notNull(),
   hashedToken: text('hashed_token'),
-  createdAt: integer('created_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
-  updatedAt: integer('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
+  createdAt: integer('created_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: integer('updated_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

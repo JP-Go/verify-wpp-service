@@ -7,7 +7,7 @@ import { verifiedContacts } from './verified-contacts';
 export const verificationRequests = sqliteTable('verification_requests', {
   id: integer('id').primaryKey(),
   requestKind: text('request_kind').notNull(),
-  requestIdentity: text('request_identity'),
+  requestIdentity: text('request_identity').notNull(),
   requestedBy: integer('requested_by')
     .references(() => users.id, {
       onDelete: 'set null',
@@ -20,12 +20,12 @@ export const verificationRequests = sqliteTable('verification_requests', {
       onDelete: 'set null',
     })
     .notNull(),
-  createdAt: integer('created_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
-  updatedAt: integer('updated_at')
-    .default(sql`(CURRENT_TIMESTAMP)`)
-    .$type<Date>(),
+  createdAt: integer('created_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: integer('updated_at', {
+    mode: 'timestamp',
+  }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const verificationRequestRelations = relations(
