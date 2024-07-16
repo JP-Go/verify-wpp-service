@@ -6,8 +6,17 @@ import { ProcessSingleVerificationRequestUseCase } from './process-single-verifi
 import { VerifiedContact } from '@/domain/entities/verified-contact';
 import { WhatsApp } from '@/domain/entities/whatsapp';
 
+/**
+ * Creates a new verification request. If the verification kind is 'SINGLE',
+ * it will also process the request in place, returning the status of thet
+ * request after processing.
+ */
 @Injectable()
 export class CreateVerificationRequestUseCase {
+  /**
+   * @param verificationRequestRepository {VerificationRequestRepository}
+   * @param processSingleVerificationRequest {ProcessSingleVerificationRequestUseCase}
+   */
   constructor(
     private verificationRequestRepository: VerificationRequestRepository,
     private processSingleVerificationRequest: ProcessSingleVerificationRequestUseCase,
