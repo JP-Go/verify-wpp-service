@@ -46,6 +46,13 @@ export class VerificationRequest {
     this.props.verifiedContacts.push(verifiedContact);
   }
 
+  contactVerified(contactId: number, newStatus: boolean) {
+    const contact = this.props.verifiedContacts.find(
+      (contact) => contact.id === contactId,
+    );
+    contact.setOnWhatsApp(newStatus);
+  }
+
   toHTTP() {
     return {
       id: this.id,

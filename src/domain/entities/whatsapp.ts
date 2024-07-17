@@ -35,6 +35,18 @@ export class WhatsApp {
     return this.props.updatedAt;
   }
 
+  updateQrCode(qrcode: string) {
+    this.props.status = 'QRCODE';
+    this.props.qrcode = qrcode;
+    this.props.updatedAt = new Date();
+  }
+
+  setConnected() {
+    this.props.status = 'CONNECTED';
+    this.props.updatedAt = new Date();
+    this.props.qrcode = '';
+  }
+
   toHTTP() {
     return {
       id: this.id,
