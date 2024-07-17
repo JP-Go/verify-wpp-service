@@ -29,13 +29,18 @@ export class CreateVerificationRequestUseCase {
     } = createValidationRequestDTO;
     const now = new Date();
 
+    const requestIdentity =
+      kind === 'SINGLE'
+        ? `${now.toISOString()}-${kind}-${number}`
+        : `${now.toISOString()}-${kind}-lot`;
+
     let request = new VerificationRequest({
       requestKind: kind,
       requestedBy: 1,
       whatsappUsed: new WhatsApp({}, 1),
       updatedAt: new Date(now),
       createdAt: new Date(now),
-      requestIdentity: `${new Date(now).toISOString()}-${kind}-${number}`,
+      requestIdentity,
       verifiedContacts: [],
     });
 
