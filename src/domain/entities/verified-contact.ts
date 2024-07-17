@@ -1,4 +1,4 @@
-type VerifiedContactProps = {
+export type VerifiedContactProps = {
   number: string;
   requestId: number;
   name: string;

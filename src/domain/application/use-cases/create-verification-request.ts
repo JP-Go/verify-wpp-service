@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { CreateVerificationRequestDTO } from '@/infra/http/dtos/create-verification-request.dto';
 import { VerificationRequestRepository } from '@/domain/repositories/verification-request-repository';
 import { VerificationRequest } from '@/domain/entities/verification-request';
-import { ProcessSingleVerificationRequestUseCase } from './process-single-verification-request';
 import { VerifiedContact } from '@/domain/entities/verified-contact';
 import { WhatsApp } from '@/domain/entities/whatsapp';
+
+import { ProcessSingleVerificationRequestUseCase } from './process-single-verification-request';
+import { ProcessLotVerificationRequestUseCase } from './process-lot-verification-request';
 
 /**
  * Creates a new verification request. If the verification kind is 'SINGLE',
@@ -15,23 +17,28 @@ import { WhatsApp } from '@/domain/entities/whatsapp';
 export class CreateVerificationRequestUseCase {
   /**
    * @param verificationRequestRepository {VerificationRequestRepository}
-   * @param processSingleVerificationRequest {ProcessSingleVerificationRequestUseCase}
+   * @param processSingleVerificationRequestUseCase {ProcessSingleVerificationRequestUseCase}
    */
   constructor(
     private verificationRequestRepository: VerificationRequestRepository,
-    private processSingleVerificationRequest: ProcessSingleVerificationRequestUseCase,
+    private processSingleVerificationRequestUseCase: ProcessSingleVerificationRequestUseCase,
+    private processLotVerificationRequestUseCase: ProcessLotVerificationRequestUseCase,
   ) {}
 
-  async execute(createValidationRequestDTO: CreateVerificationRequestDTO) {
-    const {
-      kind,
-      payload: { number },
-    } = createValidationRequestDTO;
+  async execute(
+    createValidationRequestDTO: CreateVerificationRequestDTO,
+    file: Express.Multer.File,
+  ) {
+    const { kind, payload } = createValidationRequestDTO;
     const now = new Date();
+
+    if (kind.toUpperCase() === 'LOT' && !file) {
+      throw new UnprocessableEntityException('Missing file');
+    }
 
     const requestIdentity =
       kind.toUpperCase() === 'SINGLE'
-        ? `${now.toISOString()}-${kind}-${number}`
+        ? `${now.toISOString()}-${kind}-${payload.number}`
         : `${now.toISOString()}-${kind}-lot`;
 
     let request = new VerificationRequest({
@@ -51,16 +58,17 @@ export class CreateVerificationRequestUseCase {
         new VerifiedContact({
           name: '',
           requestId: request.id,
-          number,
+          number: payload.number,
           onWhatsApp: false,
           verifiedAt: null,
           createdAt: new Date(now),
           updatedAt: new Date(now),
         }),
       );
-      await this.processSingleVerificationRequest.execute(request);
+      await this.processSingleVerificationRequestUseCase.execute(request);
+    } else {
+      await this.processLotVerificationRequestUseCase.execute(request, file);
     }
-    // TODO: Handle the kind = 'LOT' case
     return request;
   }
 }

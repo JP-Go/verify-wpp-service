@@ -9,6 +9,7 @@ import { FindVerificationRequestUseCase } from '@/domain/application/use-cases/f
 import { BaileysWhatsappVerificationService } from '../services/baileys-whatsapp-verification-service';
 import { VerificationRequestController } from './controllers/verification-request-controller';
 import { WhatsAppController } from './controllers/whatsapp-controller';
+import { ProcessLotVerificationRequestUseCase } from '@/domain/application/use-cases/process-lot-verification-request';
 @Module({
   controllers: [VerificationRequestController, WhatsAppController],
   providers: [
@@ -16,6 +17,7 @@ import { WhatsAppController } from './controllers/whatsapp-controller';
     CreateWhatsAppUseCase,
     VerifyNumberUseCase,
     ProcessSingleVerificationRequestUseCase,
+    ProcessLotVerificationRequestUseCase,
     FindVerificationRequestUseCase,
     {
       provide: WhatsAppVerificationService,
