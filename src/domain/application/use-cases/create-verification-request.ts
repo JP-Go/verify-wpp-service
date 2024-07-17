@@ -30,7 +30,7 @@ export class CreateVerificationRequestUseCase {
     const now = new Date();
 
     const requestIdentity =
-      kind === 'SINGLE'
+      kind.toUpperCase() === 'SINGLE'
         ? `${now.toISOString()}-${kind}-${number}`
         : `${now.toISOString()}-${kind}-lot`;
 
