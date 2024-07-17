@@ -14,6 +14,7 @@ export class DrizzleVerificationRequestRepository
     private drizzleSQLiteVerificationRequestMapper: DrizzleVerificationRequestMapper,
   ) {}
 
+  // TODO: handle entity update case
   async save(verificationRequest: VerificationRequest) {
     const request = this.database
       .insert(schema.verificationRequests)
@@ -46,6 +47,9 @@ export class DrizzleVerificationRequestRepository
         verifiedContacts: true,
       },
     });
+    if (model === undefined) {
+      return undefined;
+    }
     return this.drizzleSQLiteVerificationRequestMapper.toDomain(
       model,
       model.whatsappUsed,

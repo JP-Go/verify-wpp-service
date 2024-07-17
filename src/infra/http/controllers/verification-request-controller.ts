@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateVerificationRequestDTO } from '../dtos/create-verification-request.dto';
 import { CreateVerificationRequestUseCase } from '@/domain/application/use-cases/create-verification-request';
 import { VerifyNumberUseCase } from '@/domain/application/use-cases/verify-number';
@@ -28,6 +35,9 @@ export class VerificationRequestController {
   async getVerificationRequest(@Param('id') id: number) {
     const verificationRequest =
       await this.findVerificationRequestUseCase.execute(id);
+    if (verificationRequest === undefined) {
+      throw new NotFoundException('Verification Request not found');
+    }
     return {
       request: verificationRequest.toHTTP(),
     };

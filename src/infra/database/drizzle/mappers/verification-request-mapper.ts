@@ -19,22 +19,26 @@ export class DrizzleVerificationRequestMapper {
     whatsapp: typeof whatsapps.$inferSelect,
     verifiedContacts: (typeof verifiedContactsModel.$inferSelect)[],
   ) {
-    return new VerificationRequest(
-      {
-        createdAt: new Date(verificationRequestModel.createdAt),
-        updatedAt: new Date(verificationRequestModel.updatedAt),
-        requestedBy: verificationRequestModel.requestedBy,
-        whatsappUsed: this.whatsappMapper.toDomain(whatsapp),
-        requestKind: verificationRequestModel.requestKind as 'SINGLE' | 'LOT',
-        requestIdentity: verificationRequestModel.requestIdentity,
-        verifiedContacts:
-          verifiedContacts === null
-            ? []
-            : verifiedContacts.map((verifiedContact) =>
-                this.verifiedContactsMapper.toDomain(verifiedContact),
-              ),
-      },
-      verificationRequestModel.id,
-    );
+    return verificationRequestModel === null
+      ? null
+      : new VerificationRequest(
+          {
+            createdAt: new Date(verificationRequestModel.createdAt),
+            updatedAt: new Date(verificationRequestModel.updatedAt),
+            requestedBy: verificationRequestModel.requestedBy,
+            whatsappUsed: this.whatsappMapper.toDomain(whatsapp),
+            requestKind: verificationRequestModel.requestKind as
+              | 'SINGLE'
+              | 'LOT',
+            requestIdentity: verificationRequestModel.requestIdentity,
+            verifiedContacts:
+              verifiedContacts === null
+                ? []
+                : verifiedContacts.map((verifiedContact) =>
+                    this.verifiedContactsMapper.toDomain(verifiedContact),
+                  ),
+          },
+          verificationRequestModel.id,
+        );
   }
 }
