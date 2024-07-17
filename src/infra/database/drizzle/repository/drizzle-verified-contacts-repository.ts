@@ -39,6 +39,18 @@ export class DrizzleVerifiedContactsRepository
       this.drizzleSQLiteVerifiedContactMapper.toDomain(contact),
     );
   }
+
+  async findByNumber(number: string): Promise<VerifiedContact | undefined> {
+    const contact = await this.database.query.verifiedContacts.findFirst({
+      where: (savedContacts, { eq }) => {
+        return eq(savedContacts.number, number);
+      },
+    });
+    if (contact === undefined) {
+      return undefined;
+    }
+    return this.drizzleSQLiteVerifiedContactMapper.toDomain(contact);
+  }
   async findById(contactId: number): Promise<VerifiedContact | undefined> {
     const contact = await this.database.query.verifiedContacts.findFirst({
       where: (savedContacts, { eq }) => {

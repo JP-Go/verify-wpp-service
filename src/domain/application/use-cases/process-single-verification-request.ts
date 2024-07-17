@@ -14,34 +14,46 @@ import {
 @Injectable()
 export class ProcessSingleVerificationRequestUseCase {
   constructor(
-    //TODO: attach verification service
     private verificationService: WhatsAppVerificationService,
     private verifiedContactsRepository: VerifiedContactsRepository,
   ) {}
 
   async execute(verificationRequest: VerificationRequest) {
     const [contact] = verificationRequest.verifiedContacts;
-    const onWhatsappOrError = await this.verificationService
-      .verifyNumber(contact.number, verificationRequest.whatsappUsed.number)
-      .catch((error) => {
-        Logger.error(error, {
-          context: {
-            method: 'verifyNumber',
-            class: 'verificationService',
-            params: {
-              number: contact.number,
-              sessionId: verificationRequest.whatsappUsed.number,
-            },
-          },
-        });
+    const existingContact = await this.verifiedContactsRepository.findByNumber(
+      contact.number,
+    );
+    let onWhatsApp: boolean = false;
 
-        return error;
-      });
-    if (onWhatsappOrError instanceof Error) {
-      throw new InternalServerErrorException(onWhatsappOrError);
+    if (existingContact !== undefined) {
+      Logger.log('contact already checked');
+      onWhatsApp = existingContact.onWhatsApp;
+      contact.setName(existingContact.name);
+    } else {
+      const onWhatsappOrError = await this.verificationService
+        .verifyNumber(contact.number, verificationRequest.whatsappUsed.number)
+        .catch((error) => {
+          Logger.error(error.toString(), {
+            context: {
+              method: 'verifyNumber',
+              class: 'verificationService',
+              params: {
+                number: contact.number,
+                sessionId: verificationRequest.whatsappUsed.number,
+              },
+            },
+          });
+          return error as Error;
+        });
+      if (onWhatsappOrError instanceof Error) {
+        throw new InternalServerErrorException(onWhatsappOrError.message);
+      }
+
+      onWhatsApp = onWhatsappOrError;
     }
-    const onWhatsapp = onWhatsappOrError;
-    contact.setOnWhatsApp(onWhatsapp);
-    this.verifiedContactsRepository.save(contact);
+
+    contact.setOnWhatsApp(onWhatsApp);
+
+    return this.verifiedContactsRepository.save(contact);
   }
 }

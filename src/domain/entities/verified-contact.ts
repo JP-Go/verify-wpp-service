@@ -45,6 +45,10 @@ export class VerifiedContact {
     this.props.onWhatsApp = onWhatsApp;
   }
 
+  setName(name: string) {
+    this.props.name = name;
+  }
+
   toHTTP() {
     return {
       id: this.id,
