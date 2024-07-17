@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { WhatsAppInUseException } from '@/domain/exception/whatsapp-in-use-exception';
 import { WhatsApp } from '@/domain/entities/whatsapp';
 import { CreateWhatsAppDTO } from '@/infra/http/dtos/create-whatsapp.dto';
@@ -20,7 +24,23 @@ export class CreateWhatsAppUseCase {
       throw new WhatsAppInUseException();
     }
 
-    // await this.verificationService.createConnection(createWhatsAppDTO.number);
+    const unsubscribeOrError = await this.verificationService
+      .createConnection(createWhatsAppDTO.number)
+      .catch((error) => {
+        Logger.error(error, {
+          context: {
+            method: 'createConnection',
+            class: 'verificationService',
+            params: {
+              number: createWhatsAppDTO.number,
+            },
+          },
+        });
+        return error;
+      });
+    if (unsubscribeOrError instanceof Error) {
+      throw new InternalServerErrorException(unsubscribeOrError);
+    }
     const whatsapp = await this.whatsappRepository.save(
       new WhatsApp({
         number: createWhatsAppDTO.number,

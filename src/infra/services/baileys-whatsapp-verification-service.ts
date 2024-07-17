@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import makeWASocket, {
   fetchLatestBaileysVersion,
   useMultiFileAuthState,
@@ -24,7 +20,7 @@ export class BaileysWhatsappVerificationService
   async verifyNumber(number: string, sessionId: string) {
     const socket = this.connections[sessionId];
     if (socket === undefined) {
-      throw new InternalServerErrorException('Session not found');
+      throw new Error('Session not found');
     }
     const [result] = await socket.onWhatsApp(number);
     return Boolean(result.exists);
@@ -68,7 +64,7 @@ export class BaileysWhatsappVerificationService
   async getConnectionCode(sessionId: string): Promise<string> {
     const socket = this.connections[sessionId];
     if (socket === undefined) {
-      throw new InternalServerErrorException('Session not found');
+      throw new Error('Session not found');
     }
     return this.connections[sessionId].qr;
   }
