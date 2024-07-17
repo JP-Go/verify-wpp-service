@@ -1,4 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  OnApplicationShutdown,
+  OnModuleInit,
+} from '@nestjs/common';
 import makeWASocket, {
   fetchLatestBaileysVersion,
   useMultiFileAuthState,
@@ -7,15 +11,23 @@ import { WhatsAppVerificationService } from '@/domain/services/WhatsAppVerificat
 import { BaileysAuthProvider, BaileysSocket } from '@/lib/baileys';
 
 @Injectable()
-// TODO: properly handle connections
+// TODO: properly save connections
 export class BaileysWhatsappVerificationService
-  implements WhatsAppVerificationService, OnModuleInit
+  implements WhatsAppVerificationService, OnModuleInit, OnApplicationShutdown
 {
   private connections: Record<string, BaileysSocket> = {};
   private authState: BaileysAuthProvider;
 
   async onModuleInit() {
     this.authState = await useMultiFileAuthState('./baileys_auth_info');
+    const sessionId = this.authState.state.creds?.me.id.split('@').at(0);
+    await this.createConnection(sessionId);
+  }
+
+  async onApplicationShutdown() {
+    for (const connection of Object.values(this.connections)) {
+      await connection.logout();
+    }
   }
   async verifyNumber(number: string, sessionId: string) {
     const socket = this.connections[sessionId];
@@ -23,7 +35,7 @@ export class BaileysWhatsappVerificationService
       throw new Error('Session not found');
     }
     const [result] = await socket.onWhatsApp(number);
-    return Boolean(result.exists);
+    return Boolean(result?.exists);
   }
   async createConnection(sessionId: string, retries = 0) {
     if (retries > 3) {
@@ -48,7 +60,6 @@ export class BaileysWhatsappVerificationService
           ', reconnecting ',
           shouldReconnect,
         );
-        // reconnect if not logged out
         if (shouldReconnect) {
           this.createConnection(sessionId, retries + 1);
         }
