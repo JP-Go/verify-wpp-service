@@ -19,6 +19,8 @@ export class ProcessLotVerificationRequestUseCase {
     private verifiedContactsRepository: VerifiedContactsRepository,
   ) {}
 
+  // PERF: Separate the streams into their own files and implement a stream pool
+  // so they can be reused.
   async execute(
     verificationRequest: VerificationRequest,
     file: Express.Multer.File,
